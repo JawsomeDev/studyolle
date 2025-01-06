@@ -61,7 +61,9 @@ class AccountControllerTest {
     @DisplayName("인증 메일 확인 - 입력값 정상")
     @Test
     void checkEmailToken() throws Exception {
-
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("kessun", "12312314",
+                        List.of(new SimpleGrantedAuthority("ROLE_USER"))));
 
         Account account = Account.builder()
                         .email("test@email.com")
@@ -72,12 +74,6 @@ class AccountControllerTest {
         newAccount.generateEmailCheckToken();
 
         mockMvc.perform(get("/check-email-token")
-                        .with(request -> {
-                            SecurityContextHolder.getContext().setAuthentication(
-                                    new UsernamePasswordAuthenticationToken("kessun", 12312314,
-                                            List.of(new SimpleGrantedAuthority("ROLE_USER"))));
-                            return request;
-                        })
                 .param("token", newAccount.getEmailCheckToken())
                 .param("email", newAccount.getEmail()))
                 .andExpect(status().isOk())

@@ -2,6 +2,7 @@ package com.studyolle.account;
 
 
 import com.studyolle.domain.Account;
+import com.studyolle.domain.AccountRole;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -48,6 +49,7 @@ public class AccountService {
                 .studyCreatedByWeb(true)
                 .studyEnrollmentResultByWeb(true)
                 .studyUpdatedByWeb(true)
+                .role(AccountRole.CUSTOMER)
                 .build();
         return accountRepository.save(account);
     }
@@ -65,7 +67,7 @@ public class AccountService {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 account.getNickname(),
                 account.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
         SecurityContextHolder.getContext().setAuthentication(token);
 
 //        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(account.getEmail(), account.getPassword());

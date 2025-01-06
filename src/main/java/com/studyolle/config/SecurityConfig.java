@@ -28,6 +28,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/profile/*").permitAll()
                         .anyRequest().authenticated());
 
+        http.formLogin((a) -> a.loginPage("/login").permitAll() .defaultSuccessUrl("/"));
+
+        http.logout((a) -> a.logoutSuccessUrl("/"));
+
         return http.build();
     }
 }

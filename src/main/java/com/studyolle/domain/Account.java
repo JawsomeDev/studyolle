@@ -33,6 +33,9 @@ public class Account {
 
     private String url;
 
+    @Enumerated(EnumType.STRING)
+    private AccountRole role;
+
     private String occupation;
 
     private String location;
