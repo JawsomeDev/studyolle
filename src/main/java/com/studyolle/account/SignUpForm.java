@@ -1,11 +1,14 @@
 package com.studyolle.account;
 
 
+import com.studyolle.domain.Account;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Data
 public class SignUpForm {
@@ -21,4 +24,6 @@ public class SignUpForm {
     @NotBlank
     @Length(min=8, max=50)
     private String password;
+
+
 }

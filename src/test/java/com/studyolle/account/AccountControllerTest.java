@@ -128,7 +128,6 @@ class AccountControllerTest {
                 .param("email", "hyuk2000s@gmail.com")
                 .param("password", "12312314")
                 .with(csrf()))
-                .andDo((result) -> {log.info("테스트 권한 : " + SecurityContextHolder.getContext().getAuthentication());})
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"))
                 .andExpect(authenticated().withUsername("kessun"));

@@ -46,6 +46,8 @@ public class Account {
 
     private boolean studyEnrollmentResultByEmail;
 
+    private LocalDateTime emailCheckTokenGeneratedAt;
+
     private boolean studyEnrollmentResultByWeb;
 
     private boolean studyUpdatedByEmail;
@@ -54,14 +56,19 @@ public class Account {
 
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
+        this.emailCheckTokenGeneratedAt = LocalDateTime.now();
     }
 
-    public void compeleSignUp() {
+    public void compileSignUp() {
         this.emailVerified = true;
         this.joinedAt = LocalDateTime.now();
     }
 
     public boolean isValidToken(String token) {
         return this.emailCheckToken.equals(token);
+    }
+
+    public boolean canSendConfirmEmail() {
+        return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
     }
 }
