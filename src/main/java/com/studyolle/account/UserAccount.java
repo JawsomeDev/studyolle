@@ -12,6 +12,11 @@ import java.util.List;
 public class UserAccount extends User {
     private Account account;
 
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     public UserAccount(Account account) {
         super(account.getNickname(), account.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
         this.account = account;

@@ -2,9 +2,9 @@
 <html lang="en"
       xmlns="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragment.html :: head"></head>
+<head th:replace="~{fragment.html :: head}"></head>
 <body class="bg-light">
-<div th:replace="fragment.html :: main-nav"></div>
+<div th:replace="~{fragment.html :: main-nav}"></div>
 <div class="alert alert-warning" role="alert" th:if="${account !=null && !account.emailVerified}">
     스터디올래 가입을 완료하려면 <a href="#" th:href="@{/check-email}" class="alert-link">계정 인증 메일을 확인</a>하세요.
 </div>
@@ -14,7 +14,7 @@
     </div>
     <div class="row justify-content-center">
     </div>
-    <div th:replace="fragment.html :: footer"></div>
+    <div th:replace="~{fragment.html :: footer}"></div>
 </div>
 
 <script type="application/javascript">

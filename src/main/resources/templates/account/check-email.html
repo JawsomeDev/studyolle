@@ -1,8 +1,8 @@
 <html lang="en" xmlns="http://www.thymeleaf.org">
-<head th:replace="fragment.html :: head">
+<head th:replace="~{fragment.html :: head}">
 </head>
 <body class="bg-light">
-<div th:replace="fragment.html :: main-nav"></div>
+<div th:replace="~{fragment.html :: main-nav}"></div>
 <div class="container">
 <div class="py-5 text-center" th:if="${error != null}">
     <p class="lead">스터디올래 가입</p>

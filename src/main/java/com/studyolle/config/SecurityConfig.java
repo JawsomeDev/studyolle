@@ -37,6 +37,7 @@ public class SecurityConfig {
         http.formLogin(form -> form
                                 .loginPage("/login")
                         .defaultSuccessUrl("/")
+                        .usernameParameter("email")
                         .loginProcessingUrl("/login").permitAll() //
                  );
         http.sessionManagement(session -> session
