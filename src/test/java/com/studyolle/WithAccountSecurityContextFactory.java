@@ -2,16 +2,13 @@ package com.studyolle;
 
 import com.studyolle.account.AccountService;
 import com.studyolle.account.CustomUserDetailsService;
-import com.studyolle.account.SignUpForm;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.studyolle.account.form.SignUpForm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
-import org.springframework.stereotype.Component;
 
 
 public class WithAccountSecurityContextFactory implements WithSecurityContextFactory<WithAccount>{

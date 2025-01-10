@@ -1,13 +1,13 @@
 package com.studyolle.account;
 
 
+import com.studyolle.account.form.SignUpForm;
+import com.studyolle.account.validator.SignUpFormValidator;
 import com.studyolle.domain.Account;
-import com.studyolle.settings.Notifications;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -102,5 +102,39 @@ public class AccountController {
         return "account/profile";
     }
 
+    @GetMapping("/email-login")
+    public String emailLoginForm(){
+        return "account/email-login";
+    }
+
+    @PostMapping("/email-login")
+    public String sendEmailLoginLink(String email, Model model, RedirectAttributes attributes){
+        Account account = accountRepository.findByEmail(email);
+        if(account == null){
+            model.addAttribute("error", "유효한 이메일 주소가 아닙니다.");
+            return "account/email-login";
+        }
+
+//        if(!account.canSendConfirmEmail()){
+//            model.addAttribute("error", "로그인 이메일은 1시간에 한 번만 전송할 수 있습니다.");
+//            return "account/email-login";
+//        }
+
+        accountService.sendLoginLink(account);
+        attributes.addFlashAttribute("message", "이메일 인증 메일을 발송했습니다.");
+        return "redirect:/email-login";
+    }
+
+    @GetMapping("/login-by-email")
+    public String loginByEmail(String token, String email, Model model){
+        Account account = accountRepository.findByEmail(email);
+        String view = "account/logged-in-by-email";
+        if(account == null || !account.isValidToken(token)){
+            model.addAttribute("error", "로그인할 수 없습니다.");
+            return view;
+        }
+        accountService.login(account);
+        return view;
+    }
 
 }

@@ -38,8 +38,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //
         http.authorizeHttpRequests( auth->
-                auth.requestMatchers("/", "/login", "/sign-up","/check-email-token","/node_modules/**", "/images/**", "/css/**", "/js/**", "/webjars/**",
-                        "/email-login" , "/check-email-login", "/login-link").permitAll()
+                auth.requestMatchers("/", "/login", "/sign-up","/check-email-token","/login-by-email","/node_modules/**", "/images/**", "/css/**", "/js/**", "/webjars/**",
+                        "/email-login" , "/check-email-login").permitAll()
                         .requestMatchers(HttpMethod.GET,"/profile/*").hasRole("USER")
                         .anyRequest().authenticated());
         http.formLogin(form -> form
