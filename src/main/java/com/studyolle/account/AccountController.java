@@ -2,18 +2,18 @@ package com.studyolle.account;
 
 
 import com.studyolle.domain.Account;
+import com.studyolle.settings.Notifications;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -60,8 +60,7 @@ public class AccountController {
             model.addAttribute("error", "wrong.token");
             return view;
         }
-        account.compileSignUp();
-        accountService.login(account);
+        accountService.completeSignUp(account);
         model.addAttribute("numberOfUser", accountRepository.count());
         model.addAttribute("nickname", account.getNickname());
         log.info("권한 : " + SecurityContextHolder.getContext().getAuthentication());
@@ -70,7 +69,7 @@ public class AccountController {
 
     @GetMapping("/check-email")
     public String checkEmail(@CurrentUser Account account, Model model){
-        model.addAttribute("email", account.getEmail());
+        model.addAttribute( account.getEmail());
         return "account/check-email";
     }
 
@@ -91,5 +90,17 @@ public class AccountController {
     public String loginP(){
         return "account/login";
     }
+
+    @GetMapping("/profile/{nickname}")
+    public String viewProfile(@PathVariable String nickname, Model model, @CurrentUser Account account){
+        Account byNickname = accountRepository.findByNickname(nickname);
+        if(byNickname == null){
+            throw new IllegalArgumentException(byNickname + "에 해당하는 사용자가 없습니다.");
+        }
+        model.addAttribute(byNickname);
+        model.addAttribute("isOwner", byNickname.equals(account));
+        return "account/profile";
+    }
+
 
 }

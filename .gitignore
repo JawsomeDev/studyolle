@@ -38,3 +38,4 @@ out/
 
 ### NPM ###
 src/main/resources/static/node_modules/**
+studyolle/node_modules/**

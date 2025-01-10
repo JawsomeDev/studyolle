@@ -2,10 +2,14 @@ package com.studyolle.account;
 
 
 import com.studyolle.domain.Account;
+import com.studyolle.settings.Notifications;
+import com.studyolle.settings.Profile;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,17 +27,20 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AccountService implements UserDetailsService {
+@Transactional
+public class AccountService {
 
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
-    @Transactional
+
     public Account processNewAccount(@Valid SignUpForm signUpForm) {
         Account newAccount = saveNewAccount(signUpForm);
         newAccount.generateEmailCheckToken();
@@ -70,20 +77,30 @@ public class AccountService implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(token);
 
         // 세션에 SecurityContext 반영
-        HttpSession session = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest().getSession();
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+        ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
+                .getRequest().getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                        SecurityContextHolder.getContext());
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
-        Account account = accountRepository.findByEmail(emailOrNickname);
-        if(account == null ){
-            account = accountRepository.findByNickname(emailOrNickname);
-        }
-        if(account == null){
-            throw new UsernameNotFoundException(emailOrNickname);
-        }
-        return new UserAccount(account);
+
+    public void completeSignUp(Account account) {
+        account.compileSignUp();
+        login(account);
+    }
+
+    public void updateProfile(Account account, @Valid Profile profile ) {
+        modelMapper.map(profile, account);
+        accountRepository.save(account);
+        //TODO 프로필 이미지
+    }
+
+    public void updatePassword(Account account, @Length(min = 8, max = 50) String newPassword) {
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account);
+    }
+
+    public void updateNotifications(Account account, @Valid Notifications notifications) {
+        modelMapper.map(notifications, account);
+        accountRepository.save(account);
     }
 }
