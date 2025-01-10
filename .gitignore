@@ -39,3 +39,5 @@ out/
 ### NPM ###
 src/main/resources/static/node_modules/**
 studyolle/node_modules/**
+src/main/resources/static/package-lock.json
+studyolle/package-lock.json
