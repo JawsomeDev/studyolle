@@ -38,15 +38,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //
         http.authorizeHttpRequests( auth->
-                auth.requestMatchers("/", "/login", "/sign-up","/check-email-token","/login-by-email","/node_modules/**", "/images/**", "/css/**", "/js/**", "/webjars/**",
+                auth.requestMatchers("/","/login",  "/sign-up","/check-email-token","/login-by-email",
                         "/email-login" , "/check-email-login").permitAll()
                         .requestMatchers(HttpMethod.GET,"/profile/*").hasRole("USER")
                         .anyRequest().authenticated());
         http.formLogin(form -> form
                                 .loginPage("/login")
                         .defaultSuccessUrl("/")
-                        .usernameParameter("email")
-                        .loginProcessingUrl("/login").permitAll() //
+                        .usernameParameter("email").permitAll() //
                  );
         http.logout(logout -> logout.logoutSuccessUrl("/"));
 
@@ -65,6 +64,6 @@ public class SecurityConfig {
     @Bean
     protected WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-                .requestMatchers("resources/static/**","/fonts/**", "/images/**", "/css/**", "/js/**", "/h2-console/**", "/fonts-awesome/**");
+                .requestMatchers("/static/**", "/images/**", "/css/**", "/js/**", "/node_modules/**");
     }
 }

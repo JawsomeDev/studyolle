@@ -115,10 +115,10 @@ public class AccountController {
             return "account/email-login";
         }
 
-//        if(!account.canSendConfirmEmail()){
-//            model.addAttribute("error", "로그인 이메일은 1시간에 한 번만 전송할 수 있습니다.");
-//            return "account/email-login";
-//        }
+        if(!account.canSendConfirmEmail()){
+            model.addAttribute("error", "로그인 이메일은 1시간에 한 번만 전송할 수 있습니다.");
+            return "account/email-login";
+        }
 
         accountService.sendLoginLink(account);
         attributes.addFlashAttribute("message", "이메일 인증 메일을 발송했습니다.");
