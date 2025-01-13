@@ -39,7 +39,8 @@ public class Account {
 
     private String location;
 
-    @Lob @Basic(fetch = FetchType.EAGER)
+//    @Lob @Basic(fetch = FetchType.EAGER)
+    @Column(columnDefinition = "TEXT")
     private String profileImage;
 
     private boolean studyCreatedByEmail;
@@ -59,6 +60,9 @@ public class Account {
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
+    @ManyToMany
+    private Set<Zone> zones = new HashSet<>();
+
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
         this.emailCheckTokenGeneratedAt = LocalDateTime.now();
@@ -76,4 +80,5 @@ public class Account {
     public boolean canSendConfirmEmail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
     }
+
 }

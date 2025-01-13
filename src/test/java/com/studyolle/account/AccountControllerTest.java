@@ -140,4 +140,5 @@ class AccountControllerTest {
         assertTrue(accountRepository.existsByEmail("hyuk2000s@gmail.com"));
         then(javaMailSender).should().send(any(SimpleMailMessage.class));
     }
+
 }

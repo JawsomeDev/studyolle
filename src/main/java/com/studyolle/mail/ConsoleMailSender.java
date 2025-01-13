@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 @Slf4j
 @Component
-@Profile("local")
+@Profile({"local"})
 public class ConsoleMailSender implements JavaMailSender {
     @Override
     public void send(MimeMessage mimeMessage) throws MailException {
