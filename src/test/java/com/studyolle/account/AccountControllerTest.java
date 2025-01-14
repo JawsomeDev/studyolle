@@ -1,6 +1,8 @@
 package com.studyolle.account;
 
 import com.studyolle.domain.Account;
+import com.studyolle.mail.EmailMessage;
+import com.studyolle.mail.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +43,7 @@ class AccountControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    JavaMailSender javaMailSender;
+    EmailService emailService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -138,7 +140,7 @@ class AccountControllerTest {
         assertNotEquals("12312314", account.getPassword());
         assertNotNull(account.getEmailCheckToken());
         assertTrue(accountRepository.existsByEmail("hyuk2000s@gmail.com"));
-        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+        then(emailService).should().sendEmail(any(EmailMessage.class));
     }
 
 }

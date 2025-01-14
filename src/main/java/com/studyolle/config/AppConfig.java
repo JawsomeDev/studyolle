@@ -6,6 +6,7 @@ import org.modelmapper.convention.NameTokenizers;
 import org.modelmapper.spi.NameTokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
 
 @Configuration
 public class AppConfig {
@@ -18,4 +19,5 @@ public class AppConfig {
                 .setSourceNameTokenizer(NameTokenizers.UNDERSCORE);
         return modelMapper;
     }
+
 }

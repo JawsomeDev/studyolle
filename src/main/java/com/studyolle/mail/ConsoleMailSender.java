@@ -13,46 +13,12 @@ import java.io.InputStream;
 
 
 @Slf4j
+@Profile({"local", "test"})
 @Component
-@Profile({"local"})
-public class ConsoleMailSender implements JavaMailSender {
-    @Override
-    public void send(MimeMessage mimeMessage) throws MailException {
-        JavaMailSender.super.send(mimeMessage);
-    }
+public class ConsoleMailSender implements EmailService{
 
     @Override
-    public void send(MimeMessagePreparator mimeMessagePreparator) throws MailException {
-        JavaMailSender.super.send(mimeMessagePreparator);
-    }
-
-    @Override
-    public void send(MimeMessagePreparator... mimeMessagePreparators) throws MailException {
-        JavaMailSender.super.send(mimeMessagePreparators);
-    }
-
-    @Override
-    public MimeMessage createMimeMessage() {
-        return null;
-    }
-
-    @Override
-    public MimeMessage createMimeMessage(InputStream contentStream) throws MailException {
-        return null;
-    }
-
-    @Override
-    public void send(MimeMessage... mimeMessages) throws MailException {
-
-    }
-
-    @Override
-    public void send(SimpleMailMessage simpleMessage) throws MailException {
-        log.info(simpleMessage.getText());
-    }
-
-    @Override
-    public void send(SimpleMailMessage... simpleMessages) throws MailException {
-
+    public void sendEmail(EmailMessage emailMessage) {
+        log.info("sent email: {}", emailMessage.getMessage());
     }
 }
