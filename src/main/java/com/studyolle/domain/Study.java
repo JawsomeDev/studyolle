@@ -16,6 +16,12 @@ import java.util.Set;
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("managers"),
         @NamedAttributeNode("members")})
+@NamedEntityGraph(name="Study.withTagsAndManagers", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("managers")})
+@NamedEntityGraph(name = "Study.withZonesAndManagers", attributeNodes = {
+        @NamedAttributeNode("zones"),
+        @NamedAttributeNode("managers")})
 @Entity
 @Getter
 @Setter
@@ -25,7 +31,6 @@ public class Study {
 
     @Id @GeneratedValue
     private Long id;
-
 
     @ManyToMany
     private Set<Account> managers = new HashSet<>();

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragment.html :: head}"></head>
+<body>
+<nav th:replace="~{fragment.html :: main-nav}"></nav>
+<div th:replace="~{fragment.html :: study-banner}"></div>
+<div class="container">
+    <div th:replace="~{fragment.html :: study-info}"></div>
+    <div th:replace="~{fragment.html :: study-menu(studyMenu='settings')}"></div>
+    <div class="row mt-3 justify-content-center">
+        <div class="col-2">
+            <div th:replace="~{fragment.html :: study-settings-menu(currentMenu='tags')}"></div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <h2 class="col-sm-12">스터디 주제</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-info" role="alert">
+                        스터디에서 주로 다루는 주제를 태그로 등록하세요. 태그를 입력하고 콤마(,) 또는 엔터를 입력하세요.
+                    </div>
+                    <div id="whitelist" th:text="${whitelist}" hidden>
+                    </div>
+                    <input id="tags" type="text" name="tags" th:value="${#strings.listJoin(tags, ',')}"
+                           class="tagify-outside" aria-describedby="tagHelp">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragment.html :: footer}"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+<script type="application/javascript" th:inline="javascript">
+    const studyPath = /*[[${study.path}]]*/ 'defaultPath'; // Thymeleaf에서 study.path 값을 가져옴
+    document.addEventListener("DOMContentLoaded", function () {
+        // CSRF 토큰과 헤더 값 가져오기
+        const csrfToken = /*[[${_csrf.token}]]*/ 'defaultToken';
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+
+        // 태그 추가/삭제 요청 함수
+        function tagRequest(url, tagTitle) {
+            fetch(`/study/${studyPath}/settings/tags` + url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    [csrfHeader]: csrfToken // CSRF 헤더 추가
+                },
+                body: JSON.stringify({ tagTitle: tagTitle })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Success:", data);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("길이는 최소 1글자에서 20글자입니다.");
+                });
+        }
+
+        // 이벤트 핸들러 정의
+        function onAdd(e) {
+            tagRequest("/add", e.detail.data.value);
+        }
+
+        function onRemove(e) {
+            tagRequest("/remove", e.detail.data.value);
+        }
+
+        // Tagify 초기화
+        var tagInput = document.querySelector('input[name=tags]');
+        var tagify = new Tagify(tagInput, {
+            whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
+            focusable : false,
+            pattern: /^.{1,20}$/, // 태그 길이를 1~20자로 제한
+            dropdown: {
+                position: "input",
+                enabled: 1 // 입력 시 태그 제안
+            },
+            delimiters: ",", // 태그 구분자
+            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',') // 태그 데이터 포맷
+        });
+
+        // Tagify 이벤트 추가
+        tagify.on("add", onAdd);
+        tagify.on("remove", onRemove);
+
+        tagify.DOM.input.classList.add("form-control");
+        tagify.DOM.scope.style.width = "100%";
+        tagify.DOM.scope.style.maxWidth = "600px"; // 입력 박스 최대 너비
+    });
+</script>
+
+</body>
+</html>
