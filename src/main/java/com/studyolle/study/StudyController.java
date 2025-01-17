@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -68,6 +69,20 @@ public class StudyController {
         model.addAttribute(account);
         model.addAttribute(study);
         return "study/members";
+    }
+
+    @PostMapping("/study/{path}/join")
+    public String joinStudy(@CurrentUser Account account, @PathVariable String path){
+        Study study = studyRepository.findStudyWithMembersByPath(path);
+        studyService.addMember(study, account);
+        return "redirect:/study/" + study.getEncodedPath() + "/members";
+    }
+
+    @PostMapping("/study/{path}/leave")
+    public String leaveStudy(@CurrentUser Account account, @PathVariable String path){
+        Study study = studyRepository.findStudyWithMembersByPath(path);
+        studyService.removeMember(study, account);
+        return "redirect:/study/" + study.getEncodedPath() + "/members";
     }
 
 }

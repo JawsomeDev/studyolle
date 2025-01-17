@@ -30,6 +30,7 @@
     </div>
     <div th:replace="~{fragment.html :: footer}"></div>
 </div>
+<script th:replace="~{fragment.html :: tooltip}"></script>
 <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 <script type="application/javascript" th:inline="javascript">
     const studyPath = /*[[${study.path}]]*/ 'defaultPath'; // Thymeleaf에서 study.path 값을 가져옴

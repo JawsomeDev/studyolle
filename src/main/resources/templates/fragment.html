@@ -98,10 +98,9 @@
             <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
-                    <img th:src="${account != null && !#strings.isEmpty(account?.profileImage) ? account.profileImage : '/images/default.jpg'}"
+                    <img th:src="${account != null && !#strings.isEmpty(account?.profileImage) && account.profileImage != '' ? account.profileImage : '/images/default.jpg'}"
                          class="img-fluid rounded img-thumbnail profile-image"
                          width="24" height="24" alt="User Avatar" th:alt="${account != null ? account.nickname : 'Default User'}" />
-
 
                 </a>
                 <div class="dropdown-menu dropdown-menu-sm-right" aria-labelledby="userDropdown">
@@ -171,35 +170,38 @@
             </a>
         </div>
         <div class="col-4 text-right justify-content-end">
-                <span th:if="${!study.published}"
-                      class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
-                      title="스터디 공개 준비중">
-                    <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>DRAFT</button>
-                </span>
-            <span th:if="${study.closed}"
-                  class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="스터디 종료함">
-                    <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>CLOSED</button>
-                </span>
-            <span th:if="${!study.recruiting}"
-                  class="d-inline-block ml-1" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="팀원 모집중 아님">
-                    <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>OFF</button>
-                </span>
-            <span sec:authorize="isAuthenticated()" th:if="${study.isJoinable(#authentication.principal)}"
-                  class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-primary" th:href="@{'/study/' + ${study.path} + '/join'}">
-                        스터디 가입
-                    </a>
-                    <a class="btn btn-outline-primary" th:href="@{'/study/' + ${study.path} + '/members'}"
-                       th:text="${study.members.size()}">1</a>
-                </span>
-            <span sec:authorize="isAuthenticated()"
-                  th:if="${!study.closed && study.isMember(#authentication.principal)}" class="btn-group" role="group">
-                    <a class="btn btn-outline-warning" th:href="@{'/study/' + ${study.path} + '/leave'}">
-                        스터디 탈퇴
-                    </a>
-                    <a class="btn btn-outline-primary" th:href="@{'/study/' + ${study.path} + '/members'}"
-                       th:text="${study.members.size()}">1</a>
-                </span>
+            <!-- 스터디 공개 준비중 -->
+            <span th:if="${!study.published}" class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="스터디 공개 준비중">
+                <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>DRAFT</button>
+            </span>
+
+            <!-- 스터디 종료 -->
+            <span th:if="${study.closed}" class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="스터디 종료함">
+                <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>CLOSED</button>
+            </span>
+
+            <!-- 팀원 모집 OFF -->
+            <span th:if="${!study.recruiting}" class="d-inline-block ml-1" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="팀원 모집중 아님">
+                <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>OFF</button>
+            </span>
+
+            <!-- 스터디 가입 -->
+            <span sec:authorize="isAuthenticated()" th:if="${study.isJoinable(#authentication.principal)}" class="btn-group" role="group" aria-label="Basic example">
+                <form th:action="@{'/study/' + ${study.path} + '/join'}" method="post" style="display:inline;">
+                    <button class="btn btn-primary" type="submit">스터디 가입</button>
+                </form>
+                <a class="btn btn-outline-primary" th:href="@{'/study/' + ${study.path} + '/members'}" th:text="${study.members.size()}">1</a>
+            </span>
+
+            <!-- 스터디 탈퇴 -->
+            <span sec:authorize="isAuthenticated()" th:if="${!study.closed && study.isMember(#authentication.principal)}" class="btn-group" role="group">
+                <form th:action="@{'/study/' + ${study.path} + '/leave'}" method="post" style="display:inline;">
+                    <button class="btn btn-outline-warning" type="submit">스터디 탈퇴</button>
+                </form>
+                <a class="btn btn-outline-primary" th:href="@{'/study/' + ${study.path} + '/members'}" th:text="${study.members.size()}">1</a>
+            </span>
+
+            <!-- 모임 만들기 -->
             <span sec:authorize="isAuthenticated()"
                   th:if="${study.published && !study.closed && study.isManager(#authentication.principal)}">
                     <a class="btn btn-outline-primary" th:href="@{'/study/' + ${study.path} + '/new-event'}">
@@ -216,8 +218,7 @@
     <div class="row justify-content-center bg-light">
         <div class="col-10">
             <p>
-                <span th:each="tag: ${study.tags}"
-                      class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                <span th:each="tag: ${study.tags}" class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
                     <a th:href="@{'/search/tag/' + ${tag.title}}" class="text-decoration-none text-white">
                         <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>
                     </a>
@@ -231,6 +232,7 @@
         </div>
     </div>
 </div>
+
 <div th:fragment="study-menu (studyMenu)" class="row px-3 justify-content-center bg-light">
     <nav class="col-10 nav nav-tabs">
         <a class="nav-item nav-link" href="#" th:classappend="${studyMenu == 'info'}? active" th:href="@{'/study/' + ${study.path}}">
@@ -252,9 +254,9 @@
 <div th:fragment="member-list(members, isManager)" class="row px-3 justify-content-center">
     <ul class="list-unstyled col-10">
         <li class="media mt-3" th:each="member: ${members}">
-            <img th:src="${account != null && !#strings.isEmpty(account?.profileImage) ? account.profileImage : '/images/default.jpg'}"
+            <img th:src="${member != null && !#strings.isEmpty(member?.profileImage) && member.profileImage != '' ? member.profileImage : '/images/default.jpg'}"
                  class="img-fluid rounded img-thumbnail profile-image"
-                 width="64" height="64" alt="User Avatar" th:alt="${account != null ? account.nickname : 'Default User'}" />
+                 width="64" height="64" alt="User Avatar" th:alt="${member != null ? member.nickname : 'Default User'}" />
             <div class="media-body">
                 <h5 class="mt-0 mb-1"><span th:text="${member.nickname}"></span><span th:if="${isManager}" class="badge badge-primary">관리자</span></h5>
                 <span th:text="${member.bio}"></span>
