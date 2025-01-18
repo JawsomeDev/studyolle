@@ -3,6 +3,7 @@ package com.studyolle.domain;
 
 import com.studyolle.account.UserAccount;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -90,5 +91,9 @@ public class Event {
 
     public int numberOfRemainSpots(){
         return this.limitOfEnrollments - (int) this.enrollments.stream().filter(Enrollment::isAccepted).count();
+    }
+
+    public Long getNumberOfAcceptedEnrollments() {
+        return this.enrollments.stream().filter(Enrollment::isAccepted).count();
     }
 }
