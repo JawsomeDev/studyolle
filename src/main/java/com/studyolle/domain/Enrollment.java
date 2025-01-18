@@ -21,7 +21,7 @@ public class Enrollment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
 
-    private LocalDateTime enrollmentAt;
+    private LocalDateTime enrolledAt;
 
     private boolean accepted;
 

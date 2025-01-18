@@ -100,6 +100,11 @@ public class StudyService {
         checkIfManager(account, study);
         return study;
     }
+    public Study getStudyToEnroll(String path){
+        Study study = studyRepository.findStudyOnlyByPath(path);
+        checkIfExistingStudy(path, study);
+        return study;
+    }
 
     public void publish(Study study){
         study.publish();
