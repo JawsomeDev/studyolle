@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,12 +118,11 @@ public class Event {
     }
 
     public Enrollment getTheFirstWaitingEnrollment() {
-        for (Enrollment enrollment : enrollments) {
-            if(!enrollment.isAccepted()){
-                return enrollment;
-            }
-        }
-        return null;
+        return enrollments.stream()
+                .filter(enrollment -> !enrollment.isAccepted()) // 대기 중인 멤버만 필터링
+                .sorted(Comparator.comparing(Enrollment::getEnrolledAt)) // 신청 시간 기준 정렬
+                .findFirst() // 가장 먼저 신청한 멤버 반환
+                .orElse(null); // 없으면 null 반환
     }
 
     public void acceptNextWaitingEnrollment() {
