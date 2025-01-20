@@ -131,8 +131,7 @@
     </div>
     <div class="row justify-content-center">
         <form class="needs-validation col-sm-10"
-              th:action="@{${action}}"
-              th:object="${eventForm}" method="post" novalidate>
+              th:action="@{${action}}" th:object="${eventForm}" method="post" novalidate>
             <div class="form-group">
                 <label for="title">모임 이름</label>
                 <input id="title" type="text" th:field="*{title}" class="form-control"
