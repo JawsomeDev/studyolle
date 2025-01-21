@@ -11,7 +11,8 @@ public abstract class AbstractContainerBaseTest {
             new PostgreSQLContainer<>("postgres:17.2") // 사용할 Postgres 버전
                     .withDatabaseName("testdb")
                     .withUsername("testuser")
-                    .withPassword("testpass");
+                    .withPassword("testpass")
+                    .withExposedPorts(5432);
     @BeforeAll
     static void setUp() {
         // 1. PostgreSQL 컨테이너 실행

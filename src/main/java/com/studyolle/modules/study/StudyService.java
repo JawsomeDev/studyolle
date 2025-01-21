@@ -2,6 +2,7 @@ package com.studyolle.modules.study;
 
 
 import com.studyolle.modules.account.Account;
+import com.studyolle.modules.study.event.StudyCreatedEvent;
 import com.studyolle.modules.tag.Tag;
 import com.studyolle.modules.zone.Zone;
 import com.studyolle.modules.study.form.StudyDescriptionForm;
@@ -107,6 +108,7 @@ public class StudyService {
 
     public void publish(Study study){
         study.publish();
+        this.eventPublisher.publishEvent(new StudyCreatedEvent(study));
     }
 
     public void close(Study study){
