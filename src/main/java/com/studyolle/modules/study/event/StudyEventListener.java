@@ -7,7 +7,7 @@ import com.studyolle.infra.mail.EmailService;
 import com.studyolle.modules.account.Account;
 import com.studyolle.modules.account.AccountRepository;
 import com.studyolle.modules.notification.Notification;
-import com.studyolle.modules.notification.NotificationRepositoy;
+import com.studyolle.modules.notification.NotificationRepository;
 import com.studyolle.modules.notification.NotificationType;
 import com.studyolle.modules.study.Study;
 import com.studyolle.modules.study.StudyRepository;
@@ -39,7 +39,7 @@ public class StudyEventListener {
     private final EmailService emailService;
     private final TemplateEngine templateEngine;
     private final AppProperties appProperties;
-    private final NotificationRepositoy notificationRepositoy;
+    private final NotificationRepository notificationRepository;
 
     @EventListener
     public void handleStudyCreatedEvent(StudyCreatedEvent studyCreatedEvent) {
@@ -69,11 +69,11 @@ public class StudyEventListener {
         notification.setTitle(study.getTitle());
         notification.setLink("/study/" + study.getEncodedPath());
         notification.setChecked(false);
-        notification.setCreatedLocalDateTime(LocalDateTime.now());
+        notification.setCreatedDateTime(LocalDateTime.now());
         notification.setMessage(study.getShortDescription());
         notification.setAccount(account);
         notification.setNotificationType(NotificationType.STUDY_CREATED);
-        notificationRepositoy.save(notification);
+        notificationRepository.save(notification);
     }
 
     private void sendStudyCreatedEmail(Account account, Study study) {
