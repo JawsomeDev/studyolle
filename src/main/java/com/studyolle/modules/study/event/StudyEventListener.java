@@ -5,13 +5,14 @@ import com.studyolle.infra.config.AppProperties;
 import com.studyolle.infra.mail.EmailMessage;
 import com.studyolle.infra.mail.EmailService;
 import com.studyolle.modules.account.Account;
-import com.studyolle.modules.account.AccountPredicates;
 import com.studyolle.modules.account.AccountRepository;
 import com.studyolle.modules.notification.Notification;
 import com.studyolle.modules.notification.NotificationRepositoy;
 import com.studyolle.modules.notification.NotificationType;
 import com.studyolle.modules.study.Study;
 import com.studyolle.modules.study.StudyRepository;
+import com.studyolle.modules.tag.Tag;
+import com.studyolle.modules.zone.Zone;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -22,6 +23,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Async
 @Transactional
@@ -40,7 +44,14 @@ public class StudyEventListener {
     @EventListener
     public void handleStudyCreatedEvent(StudyCreatedEvent studyCreatedEvent) {
         Study study = studyRepository.findStudyWithTagsAndZonesById(studyCreatedEvent.getStudy().getId());
-        Iterable<Account> accounts = accountRepository.findAll(AccountPredicates.findByTagsAndZones(study.getTags(), study.getZones()));
+        Set<String> tagNames = study.getTags().stream()
+                .map(Tag::getTitle) // Tag의 title 필드만 추출
+                .collect(Collectors.toSet());
+        Set<String> zoneNames = study.getZones().stream()
+                .map(Zone::getLocalNameOfCity) // Zone의 localNameOfCity 필드만 추출
+                .collect(Collectors.toSet());
+        List<Account> accounts = accountRepository.findAccountsByTagsAndZones(tagNames, zoneNames);
+
         accounts.forEach(account -> {
             if(account.isStudyCreatedByEmail()){
                 // TODO 이메일 전송
