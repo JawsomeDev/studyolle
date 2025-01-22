@@ -25,10 +25,10 @@ public class Event {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Study study;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account createdBy;
 
     @Column(nullable = false)
@@ -52,7 +52,7 @@ public class Event {
     @Column(nullable = true)
     private int limitOfEnrollments;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Enrollment> enrollments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

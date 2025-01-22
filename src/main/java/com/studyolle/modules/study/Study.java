@@ -3,6 +3,7 @@ package com.studyolle.modules.study;
 
 import com.studyolle.modules.account.Account;
 import com.studyolle.modules.account.UserAccount;
+import com.studyolle.modules.event.Event;
 import com.studyolle.modules.tag.Tag;
 import com.studyolle.modules.zone.Zone;
 import jakarta.persistence.*;
@@ -11,7 +12,9 @@ import lombok.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -26,6 +29,9 @@ public class Study {
     @Id
     @GeneratedValue
     private Long id;
+
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    private List<Event> event = new ArrayList<>();
 
     @ManyToMany
     private Set<Account> managers = new HashSet<>();
@@ -122,7 +128,7 @@ public class Study {
     }
 
     public void stopRecruit() {
-        if (!canUpdateRecruiting()) {
+        if (canUpdateRecruiting()) {
             this.recruiting = false;
             this.recruitingUpdatedDateTime = LocalDateTime.now();
         } else {

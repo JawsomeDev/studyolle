@@ -25,6 +25,7 @@ public class NotificationController {
         List<Notification> notifications = repository.findByAccountAndCheckedOrderByCreatedDateTimeDesc(account, false);
         long numberOfChecked = repository.countByAccountAndChecked(account, true);
         putCategorizedNotifications(model, notifications, numberOfChecked, notifications.size());
+        model.addAttribute(account);
         model.addAttribute("isNew", true);
         service.markAsRead(notifications);
         return "notification/list";
@@ -35,6 +36,7 @@ public class NotificationController {
         List<Notification> notifications = repository.findByAccountAndCheckedOrderByCreatedDateTimeDesc(account, true);
         long numberOfChecked = repository.countByAccountAndChecked(account, false);
         putCategorizedNotifications(model, notifications,notifications.size(), numberOfChecked);
+        model.addAttribute(account);
         model.addAttribute("isNew", false);
         return "notification/list";
     }
