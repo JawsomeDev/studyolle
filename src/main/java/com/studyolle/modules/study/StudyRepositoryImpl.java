@@ -1,13 +1,20 @@
 package com.studyolle.modules.study;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.JPQLQuery;
 import com.studyolle.modules.account.QAccount;
 import com.studyolle.modules.tag.QTag;
+import com.studyolle.modules.tag.Tag;
 import com.studyolle.modules.zone.QZone;
+import com.studyolle.modules.zone.Zone;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Transactional(readOnly = true)
@@ -18,7 +25,7 @@ public class StudyRepositoryImpl extends QuerydslRepositorySupport implements St
     }
 
     @Override
-    public List<Study> findByKeyword(String keyword) {
+    public Page<Study> findByKeyword(String keyword, Pageable pageable) {
         QStudy study = QStudy.study;
         JPQLQuery<Study> query = from(study).where(study.published.isTrue()
                 .and(study.title.containsIgnoreCase(keyword))
@@ -28,6 +35,23 @@ public class StudyRepositoryImpl extends QuerydslRepositorySupport implements St
                 .leftJoin(study.zones, QZone.zone).fetchJoin()
                 .leftJoin(study.members, QAccount.account).fetchJoin()
                 .distinct();
+        JPQLQuery<Study> pageableQuery = getQuerydsl().applyPagination(pageable, query);
+        QueryResults<Study> fetchResults = pageableQuery.fetchResults();
+        return new PageImpl<>(fetchResults.getResults(), pageable, fetchResults.getTotal());
+    }
+
+    @Override
+    public List<Study> findByAccount(Set<Tag> tags, Set<Zone> zones) {
+        QStudy study = QStudy.study;
+        JPQLQuery<Study> query = from(study).where(study.published.isTrue()
+                .and(study.closed.isFalse())
+                .and(study.tags.any().in(tags))
+                .and(study.zones.any().in(zones)))
+                .leftJoin(study.tags, QTag.tag).fetchJoin()
+                .leftJoin(study.zones, QZone.zone).fetchJoin()
+                .orderBy(study.publishedDateTime.desc())
+                .distinct()
+                .limit(9);
         return query.fetch();
     }
 }

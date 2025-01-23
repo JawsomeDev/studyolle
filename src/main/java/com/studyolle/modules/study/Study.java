@@ -50,7 +50,6 @@ public class Study {
     @Basic(fetch = FetchType.EAGER)
     private String fullDescription;
 
-
     @Lob
     @Basic(fetch = FetchType.EAGER)
     private String image;
