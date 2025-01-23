@@ -83,4 +83,5 @@ public class StudyController {
         return "redirect:/study/" + study.getEncodedPath() + "/members";
     }
 
+
 }

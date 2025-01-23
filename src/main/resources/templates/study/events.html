@@ -2,10 +2,11 @@
 <html lang="en">
 <head th:replace="~{fragment.html :: head}"></head>
 <body>
-    <nav th:replace="~{fragment.html :: nav}"></nav>
+    <div th:replace="~{fragment.html :: nav}"></div>
     <div th:replace="~{fragment.html :: study-banner}"></div>
     <div class="container">
         <div th:replace="~{fragment.html :: study-info}"></div>
+
         <div th:replace="~{fragment.html :: study-menu (studyMenu= 'events')}"></div>
         <div class="row my-3 mx-3 justify-content-center">
             <div class="col-10 px-0 row">

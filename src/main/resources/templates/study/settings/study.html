@@ -15,8 +15,9 @@
             <div th:replace="~{fragment.html :: message}"></div>
             <div class="row">
                 <h5 class="col-sm-12">스터디 공개 및 종료</h5>
-                <form th:if="${!study.published && !study.closed}" class="col-sm-12" th:action="@{'/study/' +${study.getPath()} + '/settings/study/publish'}"
+                <form class="col-sm-12" th:if="${!study.published && !study.closed}"  th:action="@{'/study/' +${study.getPath()} + '/settings/study/publish'}"
                       method="POST" novalidate>
+
                     <div class="alert alert-info" role="alert">
                         스터디를 다른 사용자에게 공개할 준비가 되었다면 버튼을 클릭하세요.<br/>
                         소개, 배너 이미지, 스터디 주제 및 활동 지역을 등록했는지 확인하세요.<br/>
@@ -37,9 +38,11 @@
                         <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">스터디 종료</button>
                     </div>
                 </form>
-                <div th:if="${study.closed}" class="col-sm-12 alert alert-info">
-                    이 스터디는 <span class="date-time" th:text="${#temporals.format(study.closedDateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>에 종료됐습니다.<br/>
-                    다시 스터디를 진행하고 싶다면 새로운 스터디를 만드세요.<br/>
+                <div class="col-sm-12">
+                    <div class="alert alert-info" role="alert">
+                        이 스터디는 <span class="date-time" th:text="${#temporals.format(study.closedDateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>에 종료됐습니다.<br />
+                        다시 스터디를 진행하고 싶다면 새로운 스터디를 만드세요.<br />
+                    </div>
                 </div>
         </div>
             <hr th:if="${!study.closed && !study.recruiting && study.published}"/>

@@ -1,5 +1,6 @@
 package com.studyolle.infra.config;
 
+import com.studyolle.infra.handler.CustomAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,15 +34,21 @@ public class SecurityConfig {
 //
         http.authorizeHttpRequests( auth->
                 auth.requestMatchers("/","/login",  "/sign-up","/check-email-token","/login-by-email",
-                        "/email-login" , "/check-email-login").permitAll()
+                        "/email-login" , "/check-email-login", "/search/study").permitAll()
                         .requestMatchers(HttpMethod.GET,"/profile/*").hasRole("USER")
                         .anyRequest().authenticated());
         http.formLogin(form -> form
                                 .loginPage("/login")
-                        .defaultSuccessUrl("/")
-                        .usernameParameter("email").permitAll() //
+                        .successHandler(new CustomAuthenticationSuccessHandler())
+                        .defaultSuccessUrl("/", true)
+                        .usernameParameter("email").permitAll()
                  );
         http.logout(logout -> logout.logoutSuccessUrl("/"));
+
+        http
+                .sessionManagement((auth) -> auth
+                        .maximumSessions(1)  // 하나의 아이디에 대해 다중 로그인 허용 개수
+                        .maxSessionsPreventsLogin(true));  // 다중 로그인 개수를 초과하였을 경우 처리 방법 true : 새로운 로그인 차단 false: 기존 세션 삭제
 
         http.rememberMe(key -> key.userDetailsService(userDetailsService)
                 .tokenRepository(tokenRepository()));

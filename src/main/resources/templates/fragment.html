@@ -281,9 +281,9 @@
     </script>
 </div>
 
-<div th:fragment="study-banner" th:if="${study.useBanner}" class="row" id="study-logo">
+<div th:fragment="study-banner" th:if="${study.useBanner}" class="row g-0" id="study-logo">
     <img th:src="${study.useBanner && !#strings.isEmpty(study.image) ? study.image : '/images/default_banner.png'}"
-         alt="Study Banner" class="img-fluid rounded" />
+         alt="Study Banner" class="img-fluid w-100 rounded" />
 </div>
 <div th:fragment="study-info">
     <div class="row pt-4 text-left justify-content-center bg-light">
@@ -357,7 +357,7 @@
 </div>
 
 <div th:fragment="study-menu (studyMenu)" class="row px-3 justify-content-center bg-light">
-    <nav class="col-10 nav nav-tabs">
+    <div class="col-10 nav nav-tabs">
         <a class="nav-item nav-link" href="#" th:classappend="${studyMenu == 'info'}? active" th:href="@{'/study/' + ${study.path}}">
             <i class="fa fa-info-circle"></i> 소개
         </a>
@@ -371,7 +371,7 @@
            class="nav-item nav-link" th:classappend="${studyMenu == 'settings'}? active" href="#" th:href="@{'/study/' + ${study.path} + '/settings/description'}">
             <i class="fa fa-cog"></i> 설정
         </a>
-    </nav>
+    </div>
 </div>
 
 <div th:fragment="member-list(members, isManager)" class="row px-3 justify-content-center">

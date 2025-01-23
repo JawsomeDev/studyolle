@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional(readOnly = true)
-public interface StudyRepository extends JpaRepository<Study, Long> {
+public interface StudyRepository extends JpaRepository<Study, Long>, StudyRepositoryCustom {
     boolean existsByPath(String path);
 
 
@@ -33,4 +33,6 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
     @EntityGraph(attributePaths = {"managers", "members"})
     Study findStudyWithManagersAndMembersById(Long id);
+
+
 }
